@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="scripte/kalender.js"></script>
+<script src="scripte/scripte.js"></script>
+<link rel="stylesheet" type="text/css" href="css/style.css"/>
+<link rel="stylesheet" type="text/css" href="css/colors.css"/>
+<title>Stundenplan</title>
+<link rel="shortcut icon" type="image/x-icon" href="icons/favicon.ico">
+</head>
+<body onload="startSelection()">
+ <header id="head">
+  <div class="my-wrapper">
+   <div id="headline">Auswahl</div>
+   <form>
+    <div id="my-select-wrapper" class="my-wrapper">
+      <span>
+        <select class="my-select" id="sel1" onchange="startSelection()">
+        <option value="ics/splan01.ics" selected>21/043/01</option>
+        <option value="ics/splan61.ics">21/043/61</option>
+        <option value="ics/splan01ws22.ics">WS-Test</option>
+        <option value="ics/splan61ws22.ics">WS-Test2</option>
+        </select>
+      </span>
+    </div>
+   </form>
+  </div>
+ </header>
+<button onclick="location.reload(true)" id="myBtn" title="Home"></button>
+<button onclick="openMenu()" id="myBtnLeft" title="Menu"></button>
+
+<div id="ausgabe" class="grid-container">
+
+</div>
+<script>
+var oldWidth;
+var dataArray = [];
+var inputFile;
+var seminarGruppe;
+
+function startSelection() {
+  closeMenu();
+  setSelection();
+  printLessonPlanGrid();
+  eraseAllContent();
+  getScreenOrientation();
+  gotoWeekday();
+}
+
+function setSelection() {
+  var e = document.getElementById("sel1");
+  inputFile = e.value;
+  seminarGruppe = e.options[e.selectedIndex].text;
+}
+
+/////*** TO DO ***/////
+function printLessonPlanGrid() {
+ // den Inhalt des div-Elements "ausgabe" dynamisch erzeugen
+ // (vorher per Hand den HTML-Code loeschen)
+ loadLessonPlan()
+ 
+}
+
+function printTitle(lvArray) {
+ // den Titel "Stundenplan" ersetzen
+ // Format des neuen Titels:
+ // <Seminargruppe> | SS <Startjahr-4stellig>
+ // bzw.
+ // <Seminargruppe> | WS <Startjahr-4stellig>/<Endjahr-2stellig> 
+}
+
+function gotoWeekday() {
+ // den aktuellen Wochentag herausfinden und zum Element "dayName" scrollen
+}
+
+function getLVColor(lv) {
+ // hier jeder LV eine andere Farbe zuweisen, siehe colors.css
+ var color = "red";
+ return color;
+}
+/////*************/////
+
+</script>
+</body>
+</html>

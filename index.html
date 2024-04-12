@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="scripte/kalender.js"></script>
+    <script src="scripte/scripte.js"></script>
+    <script src="scripte/grid.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/colors.css" />
+    <title>Stundenplan</title>
+    <link rel="shortcut icon" type="image/x-icon" href="icons/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#FFE1C4" />
+  </head>
+  <body onload="startSelection()">
+    <header id="head">
+      <div class="my-wrapper">
+        <div id="headline">Auswahl</div>
+        <form>
+          <div id="my-select-wrapper" class="my-wrapper">
+            <span>
+              <select class="my-select" id="sel1" onchange="startSelection()">
+                <option value="ics/splan01.ics">21/043/01</option>
+                <option value="ics/splan61.ics">21/043/61</option>
+                <option value="ics/splan01ws22.ics" selected>WS-Test</option>
+                <option value="ics/splan61ws22.ics">WS-Test2</option>
+              </select>
+            </span>
+          </div>
+        </form>
+      </div>
+    </header>
+    <button onclick="gotoWeekday()" id="myBtn" title="Home"></button>
+    <button onclick="openMenu()" id="myBtnLeft" title="Menu"></button>
+
+    <div id="ausgabe" class="grid-container"></div>
+    <script>
+      var oldWidth;
+      var dataArray = [];
+      var inputFile;
+      var seminarGruppe;
+
+      function startSelection() {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((reg) => console.log("service worker registered"))
+            .catch((err) => console.log("service worker not registered", err));
+        }
+
+        closeMenu();
+        setSelection();
+        printLessonPlanGrid();
+        loadLessonPlan();
+        getScreenOrientation();
+        gotoWeekday();
+      }
+
+      function setSelection() {
+        var e = document.getElementById("sel1");
+        inputFile = e.value;
+        seminarGruppe = e.options[e.selectedIndex].text;
+      }
+
+      /////*** TO DO ***/////
+      function printLessonPlanGrid() {
+        // den Inhalt des div-Elements "ausgabe" dynamisch erzeugen
+        // (vorher per Hand den HTML-Code loeschen)
+        // Define the days of the week
+        const daysOfWeek = [
+          "Montag",
+          "Dienstag",
+          "Mittwoch",
+          "Donnerstag",
+          "Freitag",
+        ];
+
+        // Create the HTML grid dynamically
+        const timeSlots = [
+          "07:30",
+          "09:20",
+          "11:10",
+          "13:20",
+          "15:10",
+          "17:00",
+          "18:40",
+        ];
+        const gridContainer = document.getElementById("ausgabe");
+
+        //reset the grid
+        gridContainer.innerHTML = "";
+
+        //print the grid structure
+        daysOfWeek.forEach(function (day) {
+          gridContainer.appendChild(getDayID(day));
+          gridContainer.appendChild(getSpaceItemFullLine());
+          gridContainer.appendChild(getSpaceItem());
+          gridContainer.appendChild(getWeekDay(day));
+          if (day == "Montag") {
+            gridContainer.appendChild(getUngerade());
+            gridContainer.appendChild(getGerade());
+          } else {
+            gridContainer.appendChild(getSpaceItem());
+            gridContainer.appendChild(getSpaceItem());
+            gridContainer.appendChild(getSpaceItem());
+            gridContainer.appendChild(getSpaceItem());
+          }
+          gridContainer.appendChild(getSpaceItem());
+          timeSlots.forEach(function (time) {
+            gridContainer.appendChild(getSpaceItem());
+            gridContainer.appendChild(getTime(time));
+            gridContainer.appendChild(getLeftItemLeftColumn());
+            gridContainer.appendChild(getRightItemLeftColumn());
+            gridContainer.appendChild(getLeftItemRightColumn());
+            gridContainer.appendChild(getRightItemRightColumn());
+            gridContainer.appendChild(getSpaceItem());
+          });
+        });
+      }
+
+      function printTitle(lvArray) {
+        // den Titel "Stundenplan" ersetzen
+        // Format des neuen Titels:
+        // <Seminargruppe> | SS <Startjahr-4stellig>
+        // bzw.
+        // <Seminargruppe> | WS <Startjahr-4stellig>/<Endjahr-2stellig>
+        var seminarGruppe = lvArray[3][0];
+        const regex = /(\d{2}\/\d{3}\/\d{2})/;
+        const match = seminarGruppe.match(regex);
+        if (match) {
+          seminarGruppe = match[0];
+        } else {
+          console.log("No match found");
+        }
+
+        var icsDateTime = lvArray[12][0].split(":")[1];
+        const year = icsDateTime.substring(0, 4);
+        const month = icsDateTime.substring(4, 6);
+        const day = icsDateTime.substring(6, 8);
+        const date = new Date(year, month - 1, day);
+
+        var semester = "";
+        if (date.getMonth() >= 2 && date.getMonth() <= 9) {
+          semester = `SS ${date.getFullYear()}`;
+        } else {
+          semester = `WS ${date.getFullYear()}/${
+            date.getFullYear() + 1 - 2000
+          }`;
+        }
+
+        document.title = seminarGruppe + " | " + semester;
+      }
+
+      function gotoWeekday() {
+        // den aktuellen Wochentag herausfinden und zum Element "dayName" scrollen
+        const daysOfWeek = [
+          "Freitag",
+          "Montag",
+          "Dienstag",
+          "Mittwoch",
+          "Donnerstag",
+          "Freitag",
+          "Freitag",
+          "Freitag",
+        ];
+        const currentDate = new Date();
+        const currentDay = daysOfWeek[currentDate.getDay()];
+        const dayName = document.getElementById(currentDay);
+        dayName.scrollIntoView({ behavior: "smooth" });
+      }
+
+      function getLVColor(lv) {
+        // hier jeder LV eine andere Farbe zuweisen, siehe colors.css
+        switch (lv) {
+          case "Gremien-Blockzeit":
+            return "aliceblue";
+          case "Software Engineering II":
+            return "red";
+          case "Internet-Technologien I":
+            return "green";
+          case "Gestaltung von interaktiven Systemen":
+            return "orange";
+          case "Entwicklungswerkzeuge für Multimediasysteme":
+            return "purple";
+          case "Audio- / Videosysteme":
+            return "pink";
+          case "Audio- / Videosysteme I":
+            return "yellow";
+          case "Medienproduktion":
+            return "brown";
+          case "Projektseminare":
+            return "teal";
+          case "Windowsprogrammierung":
+            return "gray";
+          case "Computergrafik / Visualisierung II":
+            return "cyan";
+          case "CAD / grafikorientierte IT-Systeme + (E)":
+            return "magenta";
+          case "Programmierung III":
+            return "turquoise";
+          case "Rechnerarchitektur":
+            return "lightblue";
+          case "Datenbanksysteme II":
+            return "lightgreen";
+          case "Software Engineering I":
+            return "lightpink";
+          case "Computergrafik/Visualisierung I":
+            return "lightyellow";
+          case "Soziale Kompetenz im Projektmanagement (fak.)":
+            return "lightgray";
+          case "Rechnernetze/Kommunikationssysteme":
+            return "lightcyan";
+          default:
+            return "black"; // default color if subject is not found
+        }
+      }
+      /////*************/////
+    </script>
+  </body>
+</html>

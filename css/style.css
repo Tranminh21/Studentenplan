@@ -1,0 +1,251 @@
+body {
+ background-color: darkgrey;
+ font-size: 20px;
+ font-weight: bold;
+ font-family: arial, verdana;
+ white-space: nowrap;
+}
+
+#head {
+ margin: 0 auto auto;
+ overflow: hidden;
+ position: fixed;
+ top: 0;
+ left: 0;
+ width: 100%;
+ background-color: rgba(1,1,1,0.6);
+ color: white;
+ z-index: 1;
+ font-size: 1vw;
+}
+
+a:link, a:visited, a:hover, a:active {
+ text-decoration: none;
+}
+
+.my-wrapper {
+ margin: 0 auto;
+ width: 100%;
+ max-width: 400px;
+ text-align: center;
+ padding: 20px;
+ box-sizing: border-box;
+}
+
+.my-wrapper span {
+ position: relative;
+ display: inline-block;
+ vertical-align: middle;
+ width: 100%;
+}
+
+.my-wrapper span select {
+ text-align: center;
+ font-family: 'Open Sans', sans-serif;
+ background-color: orange;
+ color: #fff;
+ font-size: 1.2em;
+ padding: 5px;
+ width: 100%;
+ border: 0;
+ margin: 0;
+ cursor: pointer;
+ border-radius: 0px;
+ text-indent: 0.01px;
+ text-overflow: '';
+ -webkit-appearance: none; /* hide default arrow in chrome OSX */
+}
+
+.my-wrapper span::before, .my-wrapper span::after {
+ content: "";
+ position: absolute;
+ pointer-events: none;
+}
+
+.my-wrapper span::after { /*  Custom dropdown arrow */
+ content: "\25BC";
+ height: 1em;
+ font-size: 1em;
+ line-height: 1;
+ right: .8em;
+ top: 50%;
+ margin-top: -.5em;
+ color: #131B24;
+}
+
+.my-wrapper span::before { /*  Custom dropdown arrow cover */
+ width: 2.5em;
+ right: 0;
+ top: 0;
+ bottom: 0;
+ border-radius: 0;
+ background-color: lightgray;
+}
+
+.my-side-a, .my-side-b {
+ box-sizing: border-box;
+ margin-top: 10px;
+ margin-bottom: 10px;
+}
+
+.my-wrapper2 {
+ margin: 0 auto;
+ width: 100%;
+ text-align: center;
+ padding: 10px;
+ box-sizing: border-box;
+}
+
+#myButton {
+ font-size: 1vw;
+ margin: 10px 2px;
+ max-width: 10vw;
+ background-color: darkorange;
+ border: none;
+ color: white;
+ padding: 5px 32px;
+ text-decoration: none;
+ margin: 10px 2px;
+ cursor: pointer;
+}
+
+.grid-container {
+ display: grid;
+ grid-template-columns:auto 10% 30% 10% 30% 10% auto;  
+ background-color: darkgrey;
+ line-height: 0.1em;
+}
+
+.grid-item, .space-item, .space-item-full-line {
+ background-color: darkgrey;
+ border: 1px solid darkgrey;
+}
+
+.left-item, .right-item {
+ display: inline-block;
+}
+
+.left-item {
+ border-right: none;
+ text-align: left;
+ cursor: default;
+}
+
+.left-column-color, .right-column-color {
+ height: 3.2em;
+}
+
+.left-column-color {
+ background-color: lightgrey;
+}
+
+.right-item {
+ border-left: none;
+ text-align: right;  
+}
+
+.right-column-color {
+ background-color: lightgrey;
+}
+
+.time-item {
+ text-align: center;
+ background-color: silver;
+ line-height: 1.2em;  
+}
+
+.space-item-full-line {
+ grid-column-start: 1;
+ grid-column-end: 8;
+}
+
+.text-item {
+ grid-column-start: 2;
+ grid-column-end: 4;
+}
+
+.space-item-fill-line {
+ grid-column-start: 4;
+ grid-column-end: 8;
+}
+
+.spacer {
+ padding-left: 20px;
+ padding-right: 20px;
+}
+
+#gerade, #ungerade {
+ text-align: center;
+}
+
+#ungerade {
+ grid-column: 3 / span 2;
+}
+
+#gerade {
+ grid-column: 5 / span 2;
+}
+
+#myBtn, #myBtnLeft {
+ position: fixed;
+ bottom: 10px;
+ right: 15px;
+ z-index: 99;
+ font-size: 25px;
+ border: none;
+ outline: none;
+ background-color: coral;
+ color: white;
+ cursor: pointer;
+ border-radius: 4px;
+ width: 2em;  
+ height: 1.9em;
+ font-weight: bold;
+ background-size: 32px;
+ background-repeat: no-repeat;
+ background-position: 9px 8px;
+}
+
+#myBtnLeft {
+ background-image: url("../icons/menu.png");
+ left: 15px;
+}
+
+#myBtn {
+ background-image: url("../icons/home.png");
+}
+
+#myBtn:hover, #myBtnLeft:hover {
+ background-color: crimson;
+}
+
+a:link, a:visited, a:hover, a:active {
+ text-decoration: none;
+ color: inherit;
+}
+
+/* Anpassungen fuer Tablett hier */
+@media only screen and (max-width: 100em) {
+}
+
+/* Anpassungen fuer Handy hier */
+@media only screen and (max-width: 100em) and (orientation: portrait) {
+ .grid-item {
+  grid-column: 2 / 7;
+  border-left: none;
+  border-right: none;
+  text-align: center;
+ }
+
+ #gerade, #ungerade {
+  height: 0px;
+ }
+
+ .left-item {
+  border-bottom: none;
+ }
+
+ .right-item {
+  border-top: none;
+ }
+}
